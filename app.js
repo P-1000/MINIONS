@@ -14,12 +14,14 @@ const searchURL = b_base_url + '/search/movie?' + key_aapi;
 
 const main = document.getElementById('main');
 
-// const form = document.getElementById('form');
+ const form = document.getElementById('form');
+ const form1 = document.getElementById('form');
 
 const search = document.getElementById('search');
 
 getMovies(BASE_URL);
 
+getTV(BASE_TV);
 
 function getMovies(url){
     fetch(url).then(res => res.json()).then(data =>{
@@ -30,6 +32,39 @@ function getMovies(url){
 
     })
 }
+
+function getTV(url){
+    fetch(url).then(res => res.json()).then(data =>{
+        console.log(data);
+
+        showTV(data.results);
+
+
+    })
+}
+
+function showTV(data){
+
+    main.innerHTML = '';
+
+    data.forEach(movie => {
+        const {title,name, poster_path ,vote_average, overview} = movie;
+        const movieEL =document.createElement('div');
+        movieEL.classList.add('movie');
+        movieEL.innerHTML = `
+                 <img src="${IMG_URL+poster_path}" alt="${title}" >
+                   <div class="movie-info">
+                       <h3>${name}</h3> 
+                       <span class="color">${vote_average}</span>
+                   </div>
+                   <div class="overview">
+                   <h3>overview</h3>
+              ${overview}
+               </div>`
+
+               main.appendChild(movieEL);
+    })}
+
 
 
 function showMovies(data){
@@ -55,6 +90,15 @@ function showMovies(data){
     })}
 
     
+    form1.addEventListener('submit',(e) =>{
+        e.preventDefault();
+
+        const searchTerm = search.value;
+
+        if(searchTerm){
+            getTV(BASE_TV + searchTerm)
+        }
+    })
 
     form.addEventListener('submit',(e) =>{
         e.preventDefault();
